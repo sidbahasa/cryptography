@@ -363,7 +363,7 @@ public class Week2 {
 	 * @param two
 	 *            The other byte array
 	 * @param pad
-	 *            true if the first byte array is padded; false otherwise
+	 *            true if the xor result has a pad; false otherwise
 	 * @return The XOR of two byte arrays
 	 */
 	public static String xorBytes(byte[] one, byte[] two, boolean pad) {

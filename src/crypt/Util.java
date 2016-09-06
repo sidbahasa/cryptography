@@ -10,16 +10,6 @@ package crypt;
  * @author JShaw
  */
 public class Util {
-
-    public static boolean isValidChar(char c)
-    {
-//        int a = c;
-//        int b = ' ';
-        return (c>='a' && c<='z') || (c>='A' && c<='Z') 
-                || (c == ' ')
-                || (c == ':')   
-                || (c == ',');
-    }
     
     /**
      * Normalizes a hex string by padding the string with the hexPrefix
@@ -137,14 +127,7 @@ public class Util {
             int k = i ^ j;
             char ch = (char)k;
             
-            if (isValidChar(ch))
-            {
-                sb.append(ch);
-            }
-            else
-            {
-                sb.append('.');
-            }
+            sb.append(ch);
         }
         
         return sb.toString();

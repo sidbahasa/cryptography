@@ -104,16 +104,19 @@ public class Util {
         return hex;
     }
     
-    public static void xorByteArrays(byte[] one, byte[] two){
+    public static byte[] xorByteArrays(byte[] one, byte[] two){
         int size = one.length;
         if (two.length < size)
         {
             size = two.length;
         }
+    	byte[] res = new byte[size];
         for (int i=0;i<size;i++)
         {
-            one[i] ^= two[i];
+            res[i] = (byte)(one[i] ^ two[i]);
         }
+        
+        return res;
     }
     /**
      * XOR two hex strings.

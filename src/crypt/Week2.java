@@ -368,13 +368,13 @@ public class Week2 {
 	 */
 	public static String xorBytes(byte[] one, byte[] two, boolean pad) {
 		String ret = "";
-		Util.xorByteArrays(one, two);
+		byte[] res = Util.xorByteArrays(one, two);
 		if (pad) {
-			int padSize = one[15];
-			int length = one.length - padSize;
-			ret = new String(one, 0, length);
+			int padSize = res[15];
+			int length = res.length - padSize;
+			ret = new String(res, 0, length);
 		} else {
-			ret = new String(one);
+			ret = new String(res);
 		}
 		return ret;
 	}
@@ -390,12 +390,8 @@ public class Week2 {
 	 */
 	public static String xorBytes(byte[] one, byte[] two) {
 		String ret = "";
-		int min = one.length;
-		if (two.length < min) {
-			min = two.length;
-		}
-		Util.xorByteArrays(one, two);
-		ret = new String(one, 0, min);
+		byte[] res = Util.xorByteArrays(one, two);
+		ret = new String(res);
 		return ret;
 	}
 }

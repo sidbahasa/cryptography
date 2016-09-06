@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cryptography;
+package crypt;
 
 import java.util.List;
 import java.util.Map;
@@ -25,12 +25,12 @@ public class Week1 {
         System.out.println("ascii1: " + asciiString1);
         System.out.println("ascii2: " + asciiString2);
         
-        String hex1 = week1.asciiToHex(asciiString1);
-        String hex2 = week1.asciiToHex(asciiString2);
+        String hex1 = Util.plainTextToHex(asciiString1);
+        String hex2 = Util.plainTextToHex(asciiString2);
         System.out.println("hex1: " + hex1);
         System.out.println("hex2: " + hex2);
         
-        asciiString1 = week1.hexToAscii(hex1);
+        asciiString1 = Util.hexToPlainText(hex1);
         System.out.println("ascii: " + asciiString1);
 
                        
@@ -68,15 +68,15 @@ public class Week1 {
             String xor = week1.xorHexString(ciphers[i],ciphers[i]);
             System.out.println("XOR two ciphers: " + xor);
             System.out.println("cipher1: " + ciphers[i]);
-            String hex = week1.asciiToHex(xor);
+            String hex = Util.plainTextToHex(xor);
             System.out.println("clear1 : " + hex);
             int l = xor.length();
             for (int k=0; k<l;k++){
-                char c = week1.normalize(xor.charAt(k));
+                char c = xor.charAt(k);
                 if(week1.isValidChar(c)){
                     int xorInt=week1.xorCharHex(
-                            week1.getSubHex(ciphers[i],k*2),
-                            week1.asciiToHex(""+c)
+                            Util.getHexPairAt(ciphers[i],k*2),
+                            Util.plainTextToHex(""+c)
                     );
                     week1.addToKey(keyList, k, Integer.toHexString(xorInt));
                 }
@@ -92,7 +92,7 @@ public class Week1 {
                     String xor = week1.xorHexString(ciphers[i],ciphers[j]);
                     System.out.println("XOR two ciphers: " + xor);
                     System.out.println("cipher1: " + ciphers[i]);
-                    String hex = week1.asciiToHex(xor);
+                    String hex = Util.plainTextToHex(xor);
                     System.out.println("clear1 : " + hex);
                     int l = xor.length();
                     for (int k=0; k<l;k++){
@@ -100,7 +100,7 @@ public class Week1 {
                         if(week1.isValidChar(c)){
                             int xorInt=week1.xorCharHex(
                                     week1.getSubHex(ciphers[i],k*2),
-                                    week1.asciiToHex(""+c)
+                                    Util.plainTextToHex(""+c)
                             );
                             week1.addToKey(keyList, k, Integer.toHexString(xorInt));
                         }

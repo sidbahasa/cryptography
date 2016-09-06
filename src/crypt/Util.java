@@ -3,12 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cryptography;
-
-import java.util.List;
-import java.util.Map;
-import javax.xml.bind.DatatypeConverter;
-
+package crypt;
 
 /**
  *

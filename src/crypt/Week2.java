@@ -251,7 +251,6 @@ public class Week2 {
 	 */
 	public static void myDecryptCBC(String aesKey, String cipherText) {
 		byte[] encryptedBytes = Util.getBytesForHexString(cipherText);
-		String[] encryptedBlocks = splitStringIntoBlocks(cipherText, 32);
 		System.out.println("Decrypting...");
 
 		try {

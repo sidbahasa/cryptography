@@ -110,7 +110,6 @@ public class Util {
         {
             size = two.length;
         }
-        byte[] res = new byte[size];
         for (int i=0;i<size;i++)
         {
             one[i] ^= two[i];

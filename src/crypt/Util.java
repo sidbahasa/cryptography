@@ -10,26 +10,7 @@ package crypt;
  * @author JShaw
  */
 public class Util {
-    
-    /**
-     * Normalizes a hex string by padding the string with the hexPrefix
-     * if the length of the hex String is < 2
-     * @param hex A hex string
-     * @param hexPtefix Pads the hex String
-     * @return 
-     */
-    public static String normalizeHexString(String hex, int hexPtefix)
-    {
-        int size = hex.length();
-        StringBuilder sb = new StringBuilder(size);
-        String prefix = Integer.toHexString(hexPtefix);
-        for (int i=0; i<size;i=i+2)
-        {
-            sb.append(prefix).append(hex.charAt(i+1));
-        }
-        return sb.toString();
-    }
-    
+        
     /**
      * Converts a hex string to an ascii string
      * @param hexString The hex string to convert.
@@ -76,7 +57,9 @@ public class Util {
             int h1 = Integer.parseInt(bin.substring(0,4),2);
             int h2 = Integer.parseInt(bin.substring(4),2);
         
-            sb.append(Integer.toHexString(h1)).append(Integer.toHexString(h2));
+            sb.append(
+            		Integer.toHexString(h1))
+            	.append(Integer.toHexString(h2));
         }
         
         return sb.toString();
@@ -141,6 +124,8 @@ public class Util {
      */
     public static int xorHexPair(String hexString1, String hexString2)
     {
+    	assert(hexString1.length() == 2);
+    	assert(hexString2.length() == 2);
         int i = Integer.parseInt(hexString1, 16);
         int j = Integer.parseInt(hexString2, 16);
         int k = i ^ j;

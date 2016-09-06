@@ -19,7 +19,7 @@ public class Week1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Util week1 = new Util();
+        Week1 week1 = new Week1();
         String asciiString1 = "This is a test";
         String asciiString2 = "              ";
         System.out.println("ascii1: " + asciiString1);
@@ -34,7 +34,7 @@ public class Week1 {
         System.out.println("ascii: " + asciiString1);
 
                        
-        String res = week1.xorHexString(hex1, hex2);
+        String res = Util.xorHexString(hex1, hex2);
         System.out.println("res: " + res);
         
         
@@ -65,7 +65,7 @@ public class Week1 {
         
         for (int i=0;i<cipherLength;i++)
         {
-            String xor = week1.xorHexString(ciphers[i],ciphers[i]);
+            String xor = Util.xorHexString(ciphers[i],ciphers[i]);
             System.out.println("XOR two ciphers: " + xor);
             System.out.println("cipher1: " + ciphers[i]);
             String hex = Util.plainTextToHex(xor);
@@ -74,7 +74,7 @@ public class Week1 {
             for (int k=0; k<l;k++){
                 char c = xor.charAt(k);
                 if(week1.isValidChar(c)){
-                    int xorInt=week1.xorCharHex(
+                    int xorInt=Util.xorHexPair(
                             Util.getHexPairAt(ciphers[i],k*2),
                             Util.plainTextToHex(""+c)
                     );
@@ -89,17 +89,17 @@ public class Week1 {
             {
                 if (i==j){}
                 else{
-                    String xor = week1.xorHexString(ciphers[i],ciphers[j]);
+                    String xor = Util.xorHexString(ciphers[i],ciphers[j]);
                     System.out.println("XOR two ciphers: " + xor);
                     System.out.println("cipher1: " + ciphers[i]);
                     String hex = Util.plainTextToHex(xor);
                     System.out.println("clear1 : " + hex);
                     int l = xor.length();
                     for (int k=0; k<l;k++){
-                        char c = week1.normalize(xor.charAt(k));
+                        char c = xor.charAt(k);
                         if(week1.isValidChar(c)){
-                            int xorInt=week1.xorCharHex(
-                                    week1.getSubHex(ciphers[i],k*2),
+                            int xorInt=Util.xorHexPair(
+                                    Util.getHexPairAt(ciphers[i],k*2),
                                     Util.plainTextToHex(""+c)
                             );
                             week1.addToKey(keyList, k, Integer.toHexString(xorInt));
@@ -115,15 +115,13 @@ public class Week1 {
         {
             System.out.println(
                     "Decode: " +
-                            week1.xorHexString(ciphers[i],key)
+                            Util.xorHexString(ciphers[i],key)
             );
         }
     }
     
     private boolean isValidChar(char c)
     {
-//        int a = c;
-//        int b = ' ';
         return (c>='a' && c<='z') || (c>='A' && c<='Z') 
                 || (c == ' ')
                 || (c == ':')   
@@ -170,7 +168,7 @@ public class Week1 {
         return sb.toString();
     }
     
-    private void addToKey(List<Map<String,Integer>> keyList, int k, String hexString)
+    public void addToKey(List<Map<String,Integer>> keyList, int k, String hexString)
     {
         if (hexString.length() < 2)
         {
@@ -193,135 +191,4 @@ public class Week1 {
             map.put(hexString, 1);
         }
     }
-    
-    private String asciifyHex(String hex, int hexPtefix)
-    {
-        int size = hex.length();
-        StringBuilder sb = new StringBuilder(size);
-        String prefix = Integer.toHexString(hexPtefix);
-        for (int i=0; i<size;i=i+2)
-        {
-            sb.append(prefix).append(hex.charAt(i+1));
-        }
-        return sb.toString();
-    }
-    
-    private String hexToAscii(String hexString)
-    {
-        int size = hexString.length();
-        int i = 0;
-        StringBuilder sb = new StringBuilder(size/2);
-        while (i < size)
-        {
-            String subHex = getSubHex(hexString, i);
-            int h = Integer.parseInt(subHex,16);
-            sb.append((char)h);
-            i+=2;
-        }
-        return sb.toString();
-    }
-    
-    private String asciiToHex(String asciiString)
-    {
-        int size = asciiString.length();
-        
-        StringBuilder sb = new StringBuilder(size*2);
-        
-        for (int i=0; i<size; i++)
-        {
-            char c = asciiString.charAt(i);
-        
-            String bin = Integer.toBinaryString(c);
-            while (bin.length() < 8)
-            {
-                bin = "0" + bin;
-            }
-        
-            int h1 = Integer.parseInt(bin.substring(0,4),2);
-            int h2 = Integer.parseInt(bin.substring(4),2);
-        
-            sb.append(Integer.toHexString(h1)).append(Integer.toHexString(h2));
-        }
-        
-        return sb.toString();
-    }
-        
-    /**
-     * Gets a hex value for a char in a hex string
-     * @param hexString The hex string.
-     * @param index The 0-based index of the hex value for a char.
-     * @return The hex value for a char in a hex string
-     */
-    private String getSubHex(String hexString, int index)
-    {
-        String hex = hexString.substring(index, index+2);
-        return hex;
-    }
-    
-    /**
-     * XOR two hex strings.
-     * @param hexString1
-     * @param hexString2
-     * @return The hex XOR of two hex string.
-     */
-    private String xorHexString(String hexString1, String hexString2)
-    {
-        int limit = hexString1.length() > hexString2.length()? 
-                hexString2.length(): hexString1.length();
-        
-        StringBuilder sb = new StringBuilder(limit/2);
-        for (int n=0; n < limit;n=n+2)
-        {
-            int i = Integer.parseInt(getSubHex(hexString1,n), 16);
-            int j = Integer.parseInt(getSubHex(hexString2,n), 16);
-            int k = i ^ j;
-            char ch = normalize((char)k);
-            
-            if (isValidChar(ch))
-            {
-                sb.append(ch);
-            }
-            else
-            {
-                sb.append('.');
-            }
-        }
-        
-        return sb.toString();
-    }
-
-    private char normalize(char c)
-    {
-//        if ( ' ' == (c + 32))
-//            c = ' ';
-//
-        return c;
-    }
-    
-    private int xorCharHex(String hexString1, String hexString2)
-    {
-        int i = Integer.parseInt(hexString1, 16);
-        int j = Integer.parseInt(hexString2, 16);
-        int k = i ^ j;
-        return k;
-    }
-
-    private char binaryToString(String binary)
-    {
-        char c = (char)Integer.parseInt(binary,2);
-        return c;
-    }
-    
-    private String hexToBinary(String string)
-    {
-        int i = Integer.parseInt(string, 16);
-        String bin = Integer.toBinaryString(i);
-        int size = bin.length();
-        while (size < 8){
-            bin = '0' + bin;
-            size++;
-        }
-        return bin;
-    }
-    
 }

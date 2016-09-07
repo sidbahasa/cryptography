@@ -36,23 +36,30 @@ import org.apache.commons.io.IOUtils;
  */
 public class Week3 {
 
+	private static final String SAMPLE_H0 = "03c08f4ee0b576fe319338139c045c89c3e8e9409633bea29442e21425006ea8";
 	/**
 	 * 03c08f4ee0b576fe319338139c045c89c3e8e9409633bea29442e21425006ea8
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		test("C:\\Users\\jshaw\\Desktop\\6.1.intro.mp4");
-		test("C:\\Users\\jshaw\\Desktop\\6.2.birthday.mp4");
+		if (getH0("C:\\Users\\jshaw\\Desktop\\6.2.birthday.mp4").equals(SAMPLE_H0)){
+			System.out.println("h0:" + getH0("C:\\Users\\jshaw\\Desktop\\6.1.intro.mp4"));			
+		}
+		else{
+			System.out.println("Bad h0:" + getH0("C:\\Users\\jshaw\\Desktop\\6.1.intro.mp4"));			
+		}
+		
 	}
 	
-	private static void test(String filename){
+	private static String getH0(String filename){
 		FileInputStream is = null;
+		String hash = null;
 		try {
 			File file = new File(filename);
 			is = new FileInputStream(file);
 			byte[] bytes = IOUtils.toByteArray(is);
 			byte[][] blocks = split(bytes,1024);
-			System.out.println("h0: " + Util.getHexStringFromBytes(calculateSha256ForH0(blocks)));
+			hash = Util.getHexStringFromBytes(calculateSha256ForH0(blocks));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -62,6 +69,8 @@ public class Week3 {
 			} catch (Exception ignore) {
 			}
 		}
+		
+		return hash;
 	}
 
 	/**
@@ -121,18 +130,18 @@ public class Week3 {
 	 * @throws Exception
 	 */
 	private static byte[] calculateSha256ForH0(byte[][] blocks) throws Exception {
-		//MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-		byte[] dataBytes = new byte[1024];
+		
 		byte[] mdBytes = {};
 		byte[] concat = {};
 		
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+
 		for (int i=blocks.length; i> 0; i--)
 		{
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			concat = concat(blocks[i-1],mdBytes);
 			md.update(concat,0,concat.length);
 			mdBytes = md.digest();
+			md.reset();
 		}
 		
 		return mdBytes;

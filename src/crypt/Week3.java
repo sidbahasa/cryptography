@@ -1,4 +1,4 @@
-/*
+/**
  * Suppose a web site hosts large video file F that anyone can download. Browsers who download the file need to make sure the file is authentic before displaying the content to the user. One approach is to have the web site hash the contents of F using a collision resistant hash and then distribute the resulting short hash value h=H(F) to users via some authenticated channel (later on we will use digital signatures for this). Browsers would download the entire file F, check that H(F) is equal to the authentic hash value h and if so, display the video to the user. Unfortunately, this means that the video will only begin playing after the *entire* file F has been downloaded.
 
 Our goal in this project is to build a file authentication system that lets browsers authenticate and play video chunks as they are downloaded without having to wait for the entire file. Instead of computing a hash of the entire file, the web site breaks the file into 1KB blocks (1024 bytes). It computes the hash of the last block and appends the value to the second to last block. It then computes the hash of this augmented second to last block and appends the resulting hash to the third block from the end. This process continues from the last block to the first as in the following diagram:
@@ -24,13 +24,117 @@ You can check your code by using it to hash a different file. In particular, the
  */
 package crypt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.security.MessageDigest;
+
+import org.apache.commons.io.IOUtils;
+
 /**
  *
  * @author JShaw
  */
 public class Week3 {
-   
-	public static void main(String[] args){
-		System.out.println("test");
+
+	/**
+	 * 03c08f4ee0b576fe319338139c045c89c3e8e9409633bea29442e21425006ea8
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		test("C:\\Users\\jshaw\\Desktop\\6.1.intro.mp4");
+		test("C:\\Users\\jshaw\\Desktop\\6.2.birthday.mp4");
+	}
+	
+	private static void test(String filename){
+		FileInputStream is = null;
+		try {
+			File file = new File(filename);
+			is = new FileInputStream(file);
+			byte[] bytes = IOUtils.toByteArray(is);
+			byte[][] blocks = split(bytes,1024);
+			System.out.println("h0: " + Util.getHexStringFromBytes(calculateSha256ForH0(blocks)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (is != null)
+					is.close();
+			} catch (Exception ignore) {
+			}
+		}
+	}
+
+	/**
+	 * Split file bytes into blocks of blockSize each.
+	 * @param bytes The bytes to split.
+	 * @param blockSize The size of a block.
+	 * @return The blocks
+	 */
+	private static byte[][] split(byte[] bytes, int blockSize){
+		int nBlocks = bytes.length/blockSize;
+		int last = bytes.length - (nBlocks * blockSize);
+		if (last > 0) nBlocks++;
+		if (last == 0) last = blockSize;
+		byte[][] blocks = new byte[nBlocks][];
+		
+		byte[] aBlock = {};
+		for (int i=0;i<nBlocks;i++)
+		{
+			
+			if (i == nBlocks-1)
+			{
+				aBlock = new byte[last];
+			}
+			else{
+				aBlock = new byte[blockSize];
+			}
+				
+			System.arraycopy(bytes, i*blockSize, aBlock, 0, aBlock.length);
+			blocks[i] = aBlock;
+		}
+				
+		return blocks;
+	}
+	
+	/**
+	 * Concatenates two byte arrays
+	 * @param one 
+	 * @param two
+	 * @return The concatenated bytes arrays
+	 */
+	private static byte[] concat(byte[] one, byte[] two)
+	{
+		byte[] concat = new byte[one.length+two.length];
+		
+		if (one.length > 0)
+			System.arraycopy(one, 0, concat, 0, one.length);
+		if (two.length > 0)
+			System.arraycopy(two, 0, concat, one.length, two.length);
+		
+		return concat;
+		
+	}
+	
+	/**
+	 * Calculates the sha256 hash for h0
+	 * @param blocks The blocks of the file.
+	 * @throws Exception
+	 */
+	private static byte[] calculateSha256ForH0(byte[][] blocks) throws Exception {
+		//MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+		byte[] dataBytes = new byte[1024];
+		byte[] mdBytes = {};
+		byte[] concat = {};
+		
+		for (int i=blocks.length; i> 0; i--)
+		{
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			concat = concat(blocks[i-1],mdBytes);
+			md.update(concat,0,concat.length);
+			mdBytes = md.digest();
+		}
+		
+		return mdBytes;
 	}
 }

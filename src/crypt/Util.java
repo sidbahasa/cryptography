@@ -73,7 +73,10 @@ public class Util {
      */
     public static String getHexPairAt(String hexString, int index)
     {
-        String hex = hexString.substring(index, index+2);
+    	String hex = "";
+    	if (hexString.length() == 2) hex = hexString;
+    	else
+    		hex = hexString.substring(index, index+2);
         return hex;
     }
     
@@ -102,15 +105,16 @@ public class Util {
         int limit = hexString1.length() > hexString2.length()? 
                 hexString2.length(): hexString1.length();
         
-        StringBuilder sb = new StringBuilder(limit/2);
+        StringBuilder sb = new StringBuilder(limit);
         for (int n=0; n < limit;n=n+2)
         {
             int i = Integer.parseInt(getHexPairAt(hexString1,n), 16);
             int j = Integer.parseInt(getHexPairAt(hexString2,n), 16);
             int k = i ^ j;
-            char ch = (char)k;
+            String hex = Integer.toHexString(k);
+            if (hex.length() == 1) hex = "0" + hex;
             
-            sb.append(ch);
+            sb = sb.append(hex);
         }
         
         return sb.toString();

@@ -3,8 +3,6 @@ package crypt;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -186,7 +184,6 @@ public class Week4 {
 		String plainText = Util.hexToPlainText(encoded);
 		System.out.println("PlainText:" + plainText);
 		return plainText;
-		
 	}
 	
 	/**
@@ -196,11 +193,12 @@ public class Week4 {
 	 */
 	private static String[] split(String string)
 	{
+		int blockSize = 32;
 		int size = string.length();
-		int nBlocks = size/32;
+		int nBlocks = size/blockSize;
 		String[] blocks = new String[nBlocks];
 		for (int i=0;i<nBlocks;i++){
-			blocks[i] = string.substring(i*32,(i*32)+32);
+			blocks[i] = string.substring(i*blockSize,(i*blockSize)+blockSize);
 		}
 		return blocks;
 	}

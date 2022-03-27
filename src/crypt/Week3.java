@@ -26,9 +26,8 @@ package crypt;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -42,11 +41,11 @@ public class Week3 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (getH0("C:\\Users\\jshaw\\Desktop\\6.2.birthday.mp4").equals(SAMPLE_H0)){
-			System.out.println("h0:" + getH0("C:\\Users\\jshaw\\Desktop\\6.1.intro.mp4"));			
+		if (getH0("C:\\Users\\sid\\JavaProjects\\Cryptography\\cryptography\\resource\\6.2.birthday.mp4").equals(SAMPLE_H0)){
+			System.out.println("h0:" + getH0("C:\\Users\\sid\\JavaProjects\\Cryptography\\cryptography\\resource\\6.1.intro.mp4"));			
 		}
 		else{
-			System.out.println("Bad h0:" + getH0("C:\\Users\\jshaw\\Desktop\\6.1.intro.mp4"));			
+			System.out.println("Bad h0:" + getH0("C:\\Users\\sid\\JavaProjects\\Cryptography\\cryptography\\resource\\6.1.intro.mp4"));			
 		}
 		
 	}
@@ -57,7 +56,7 @@ public class Week3 {
 		try {
 			File file = new File(filename);
 			is = new FileInputStream(file);
-			byte[] bytes = IOUtils.toByteArray(is);
+			byte[] bytes = is.readAllBytes();
 			byte[][] blocks = split(bytes,1024);
 			hash = Util.getHexStringFromBytes(calculateSha256ForH0(blocks));
 		} catch (Exception e) {
